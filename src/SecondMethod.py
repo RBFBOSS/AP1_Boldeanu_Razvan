@@ -38,7 +38,6 @@ class SecondMethod:
 
         actual_sold = test_data['Sold[MW]'].values
 
-        # ID3 predictions
         for target in special_columns:
             print(f"\nTraining ID3 for column: {target}")
 
@@ -75,7 +74,6 @@ class SecondMethod:
 
             predicted_columns_id3[target] = pred_values_id3
 
-        # Bayesian predictions
         for target in special_columns:
             print(f"\nTraining Bayesian for column: {target}")
 
@@ -137,7 +135,7 @@ class SecondMethod:
             print("Error: Missing 'Productie[MW]' or 'Consum[MW]' in Bayesian predictions.")
             predicted_sold_bayes = None
 
-        plt.figure(figsize=(14, 7))
+        plt.figure(figsize=(15, 7))
         plt.plot(test_df['Data'], actual_sold, label='Real', color='blue')
         plt.plot(test_df['Data'], predicted_sold_id3, label='ID3', alpha=0.7, color='red')
         plt.plot(test_df['Data'], predicted_sold_bayes, label='Bayesian', alpha=0.7, color='green')

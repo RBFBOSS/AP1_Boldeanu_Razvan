@@ -84,7 +84,7 @@ class FirstMethod:
         print(f"\n[Method 1] Bayesian:")
         print(f"RMSE: {rmse_bayes:.2f}, MAE: {mae_bayes:.2f}, R²: {r2_bayes:.2f}")
 
-        plt.figure(figsize=(14, 7))
+        plt.figure(figsize=(15, 7))
         plt.plot(test_df['Data'], y_test, label='Real', color='blue')
         plt.plot(test_df['Data'], pred_values_id3, label='ID3', alpha=0.7, color='red')
         plt.plot(test_df['Data'], pred_values_bayes, label='Bayesian', alpha=0.7, color='green')
