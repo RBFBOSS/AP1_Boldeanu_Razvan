@@ -1,6 +1,9 @@
 import pandas as pd
 import warnings
 
+from src.FirstMethod import FirstMethod
+from src.SecondMethod import SecondMethod
+
 warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 
 
@@ -72,3 +75,34 @@ def data_init():
 if __name__ == "__main__":
     training_data, testing_data = data_init()
 
+    print("Data initialized successfully!")
+
+    print("Method, use_scaling, RMSE_ID3, RMSE_Bayes, MAE_ID3, MAE_Bayes\n")
+
+    attemps = []
+
+    for method in [1, 2]:
+        for scaling in [False, True]:
+            attemps.append((method, scaling))
+
+    for (m, scaling) in attemps:
+        iteration_tag = f"M{m}_S{scaling}"
+        print(f"\n=== Running: Method={m}, scaling={scaling}===")
+
+        if m == 1:
+            rmse_id3, rmse_bayes, mae_id3, mae_bayes = FirstMethod.run(
+                training_data, testing_data,
+                scale=scaling,
+                iteration_tag=iteration_tag
+            )
+        else:
+            rmse_id3, rmse_bayes, mae_id3, mae_bayes = SecondMethod.run(
+                training_data, testing_data,
+                scale=scaling,
+                iteration_tag=iteration_tag
+            )
+
+        print(f"{m}, {scaling}, "
+              f"{rmse_id3:.2f}, {rmse_bayes:.2f}, {mae_id3:.2f}, {mae_bayes:.2f}\n")
+
+    print(f"\nDone running all methods!")
