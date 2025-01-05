@@ -8,13 +8,23 @@ warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 
 
 def data_init():
+    """
+    Loads and preprocesses the training and testing data from multiple Excel files.
+    - Concatenates multiple training files into a single DataFrame
+    - Loads the test file into a separate DataFrame
+    - Converts columns to numeric where needed
+    - Converts 'Data' column to datetime
+    - Cleans and converts 'Medie Consum[MW]' to numeric (if present)
+    - Drops rows with NaN
+    :return: train_data, test_data
+    """
     train_files = [
-        r"../data/2014-2016.xlsx",
-        r"../data/2017-2019.xlsx",
-        r"../data/2020-2022.xlsx",
-        r"../data/2023-2024-no-dec.xlsx"
+        r"data/2014-2016.xlsx",
+        r"data/2017-2019.xlsx",
+        r"data/2020-2022.xlsx",
+        r"data/2023-2024-no-dec.xlsx"
     ]
-    test_file = r"../data/2024-dec.xlsx"
+    test_file = r"data/2024-dec.xlsx"
 
     train_dfs = []
     for fpath in train_files:
@@ -79,13 +89,13 @@ if __name__ == "__main__":
 
     print("Method, use_scaling, RMSE_ID3, RMSE_Bayes, MAE_ID3, MAE_Bayes\n")
 
-    attemps = []
+    attempts = []
 
     for method in [1, 2]:
         for scaling in [False, True]:
-            attemps.append((method, scaling))
+            attempts.append((method, scaling))
 
-    for (m, scaling) in attemps:
+    for (m, scaling) in attempts:
         iteration_tag = f"M{m}_S{scaling}"
         print(f"\n=== Running: Method={m}, scaling={scaling}===")
 

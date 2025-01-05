@@ -8,6 +8,11 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 
 class FirstMethod:
+    """
+    Method 1:
+    - Predicting 'Sold[MW]' values using only this column
+    - Using ID3 (DecisionTreeClassifier) and Bayesian (GaussianNB) adapted for regression via bucketing
+    """
     @staticmethod
     def run(train_data, test_data, scale=False, iteration_tag=""):
         print(f"\n[Method 1] Predicting Sold[MW] - (ID3 + Bayesian) [Tag: {iteration_tag}]")
@@ -45,14 +50,11 @@ class FirstMethod:
         test_df['Sold_Bucket'] = test_df['Sold_Bucket'].fillna(0).astype(int)
         y_train_buckets = train_df['Sold_Bucket']
 
-        # Optional scaling
         if scale:
             scaler = StandardScaler()
             x_train = scaler.fit_transform(x_train)
             x_test = scaler.transform(x_test)
 
-        # ID3
-        print("\n[Method 1] Using default ID3 parameters...")
         id3_model = DecisionTreeClassifier(criterion='entropy', max_depth=5, random_state=42)
 
         id3_model.fit(x_train, y_train_buckets)
@@ -61,13 +63,11 @@ class FirstMethod:
         bucket_means = train_df.groupby('Sold_Bucket')['Sold[MW]'].mean().to_dict()
         pred_values_id3 = np.array([bucket_means.get(b, bucket_means[0]) for b in pred_buckets_id3])
 
-        # Bayesian
         bayes_model = GaussianNB()
         bayes_model.fit(x_train, y_train_buckets)
         pred_buckets_bayes = bayes_model.predict(x_test)
         pred_values_bayes = np.array([bucket_means.get(b, bucket_means[0]) for b in pred_buckets_bayes])
 
-        # Evaluate
         mse_id3 = mean_squared_error(y_test, pred_values_id3)
         rmse_id3 = mse_id3 ** 0.5
         mae_id3 = mean_absolute_error(y_test, pred_values_id3)
@@ -78,20 +78,19 @@ class FirstMethod:
         mae_bayes = mean_absolute_error(y_test, pred_values_bayes)
         r2_bayes = r2_score(y_test, pred_values_bayes)
 
-        print(f"\n[Method 1] ID3 Performance:")
+        print(f"\n[Method 1] ID3:")
         print(f"RMSE: {rmse_id3:.2f}, MAE: {mae_id3:.2f}, R²: {r2_id3:.2f}")
 
-        print(f"\n[Method 1] Bayesian Performance:")
+        print(f"\n[Method 1] Bayesian:")
         print(f"RMSE: {rmse_bayes:.2f}, MAE: {mae_bayes:.2f}, R²: {r2_bayes:.2f}")
 
-        # Save plot
         plt.figure(figsize=(14, 7))
-        plt.plot(test_df['Data'], y_test, label='Real Values', color='blue')
-        plt.plot(test_df['Data'], pred_values_id3, label='ID3 Predictions', alpha=0.7, color='orange')
-        plt.plot(test_df['Data'], pred_values_bayes, label='Bayesian Predictions', alpha=0.7, color='green')
+        plt.plot(test_df['Data'], y_test, label='Real', color='blue')
+        plt.plot(test_df['Data'], pred_values_id3, label='ID3', alpha=0.7, color='red')
+        plt.plot(test_df['Data'], pred_values_bayes, label='Bayesian', alpha=0.7, color='green')
         plt.xlabel('Date')
         plt.ylabel('Sold[MW]')
-        plt.title(f'[Method 1] Real vs. ID3 & Bayesian Predictions - {iteration_tag}')
+        plt.title(f'[First method] Predictions - {iteration_tag}')
         plt.legend()
 
         plt.show()
